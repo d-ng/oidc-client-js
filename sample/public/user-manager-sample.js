@@ -27,12 +27,12 @@ Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;
 
 var settings = {
-    authority: 'http://localhost:5000/oidc',
-    client_id: 'js.tokenmanager',
+    authority: 'https://devdata.osisoft.com/piwebapi',
+    client_id: '6d8bb2e8-a147-43eb-a917-5d4f9ccf4189',
     redirect_uri: 'http://localhost:5000/user-manager-sample.html',
     post_logout_redirect_uri: 'http://localhost:5000/user-manager-sample.html',
     response_type: 'id_token token',
-    scope: 'openid email roles',
+    scope: 'openid',
     
     popup_redirect_uri:'http://localhost:5000/user-manager-sample-popup-signin.html',
     popup_post_logout_redirect_uri:'http://localhost:5000/user-manager-sample-popup-signout.html',
@@ -42,7 +42,7 @@ var settings = {
     //silentRequestTimeout:10000,
 
     filterProtocolClaims: true,
-    loadUserInfo: true
+    loadUserInfo: false
 };
 var mgr = new Oidc.UserManager(settings);
 
@@ -162,6 +162,39 @@ function endSignoutMainWindow(){
     mgr.signoutRedirectCallback().then(function(resp) {
         log("signed out", resp);
     }).catch(function(err) {
+        log(err);
+    });
+};
+
+document.getElementById('piWebApiHomePage').addEventListener("click", piWebApiHomePage, false);
+document.getElementById('piWebApiUserInfo').addEventListener("click", piWebApiUserInfo, false);
+
+function piWebApiHomePage() {
+    mgr.getUser().then(function (user) {
+        var url = settings.authority;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onload = function () {
+            log(xhr.status, JSON.parse(xhr.responseText));
+        }
+        xhr.setRequestHeader("Authorization", "Bearer " + user.access_token);
+        xhr.send();
+    }).catch(function (err) {
+        log(err);
+    });
+};
+
+function piWebApiUserInfo () {
+    mgr.getUser().then(function (user) {
+        var url = settings.authority + "/system/userinfo";
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onload = function () {
+            log(xhr.status, JSON.parse(xhr.responseText));
+        }
+        xhr.setRequestHeader("Authorization", "Bearer " + user.access_token);
+        xhr.send();
+    }).catch(function (err) {
         log(err);
     });
 };

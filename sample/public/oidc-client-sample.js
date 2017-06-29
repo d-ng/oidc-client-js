@@ -18,15 +18,15 @@ Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;
 
 var settings = {
-    authority: 'http://localhost:5000/oidc',
-    client_id: 'js.tokenmanager',
+    authority: 'https://devdata.osisoft.com/piwebapi',
+    client_id: '6d8bb2e8-a147-43eb-a917-5d4f9ccf4189',
     redirect_uri: 'http://localhost:5000/oidc-client-sample.html',
     post_logout_redirect_uri: 'http://localhost:5000/oidc-client-sample.html',
     response_type: 'id_token token',
-    scope: 'openid email roles',
+    scope: 'openid',
 
     filterProtocolClaims: true,
-    loadUserInfo: true
+    loadUserInfo: false
 };
 var client = new Oidc.OidcClient(settings);
 
